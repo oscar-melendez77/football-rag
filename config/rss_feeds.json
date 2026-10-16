@@ -1,0 +1,7 @@
+[
+  {"name": "bbc_football", "url": "https://feeds.bbci.co.uk/sport/football/rss.xml", "language": "en"},
+  {"name": "espn_soccer", "url": "https://www.espn.com/espn/rss/soccer/news", "language": "en"},
+  {"name": "guardian_football_rss", "url": "https://www.theguardian.com/football/rss", "language": "en"},
+  {"name": "marca_futbol", "url": "https://e00-marca.uecdn.es/rss/futbol/primera-division.xml", "language": "es"},
+  {"name": "as_futbol", "url": "https://feeds.as.com/mrss-s/pages/as/site/as.com/section/futbol/portada/", "language": "es"}
+]
