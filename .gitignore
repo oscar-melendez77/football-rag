@@ -11,3 +11,4 @@ airflow/.env
 .terraform/
 *.tfstate
 *.tfstate.*
+airflow/secrets/

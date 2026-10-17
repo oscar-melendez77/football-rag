@@ -24,6 +24,11 @@ resource "google_project_service" "bigquery" {
   disable_on_destroy = false
 }
 
+resource "google_project_service" "iam" {
+  service            = "iam.googleapis.com"
+  disable_on_destroy = false
+}
+
 resource "google_storage_bucket" "lake" {
   name          = "football-rag-lake-${var.bucket_suffix}"
   location      = upper(var.region)
@@ -62,4 +67,18 @@ resource "google_bigquery_dataset" "layers" {
   }
 
   depends_on = [google_project_service.bigquery]
+}
+
+resource "google_service_account" "airflow" {
+  account_id   = "airflow-pipeline"
+  display_name = "Airflow pipeline"
+  description  = "Identity used by Airflow tasks to write to the data lake"
+
+  depends_on = [google_project_service.iam]
+}
+
+resource "google_storage_bucket_iam_member" "airflow_lake_writer" {
+  bucket = google_storage_bucket.lake.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.airflow.email}"
 }

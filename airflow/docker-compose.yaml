@@ -84,6 +84,7 @@ x-airflow-common:
     - ../src:/opt/airflow/project/src
     - ../config:/opt/airflow/project/config
     - ../data:/opt/airflow/project/data
+    - ${AIRFLOW_PROJ_DIR:-.}/secrets:/opt/airflow/secrets:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
