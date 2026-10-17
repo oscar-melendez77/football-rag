@@ -4,4 +4,7 @@ data/
 __pycache__/
 *.pyc
 .vscode/
-.idea/
+.idea/airflow/logs/
+airflow/.env
+airflow/logs/
+airflow/.env
