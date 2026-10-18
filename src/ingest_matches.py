@@ -13,7 +13,8 @@ from dotenv import load_dotenv
 BASE_URL = "https://api.football-data.org/v4"
 MAX_DAYS_PER_REQUEST = 10
 MAX_RETRIES = 3
-RAW_DIR = Path("data/raw/matches")
+DAILY_DIR = Path("data/raw/matches")
+BACKFILL_DIR = Path("data/raw/matches_backfill")
 
 
 def ascii_safe(text):
@@ -115,8 +116,13 @@ def fetch_competition(api_key, code, date_from, date_to):
     return sorted(matches_by_id.values(), key=lambda m: m.get("utcDate", ""))
 
 
-def save_raw(payload, code, run_date):
-    out_dir = RAW_DIR / f"run_date={run_date}"
+def get_output_dir(mode, run_date, date_from, date_to):
+    if mode == "backfill":
+        return BACKFILL_DIR / f"window={date_from}_{date_to}"
+    return DAILY_DIR / f"run_date={run_date}"
+
+
+def save_raw(payload, code, out_dir):
     out_dir.mkdir(parents=True, exist_ok=True)
     path = out_dir / f"{code}.json"
     with open(path, "w", encoding="utf-8") as f:
@@ -140,7 +146,7 @@ def parse_args():
 def main():
     args = parse_args()
     api_key = load_api_key()
-    run_date = date.today().isoformat()
+    run_date = datetime.now(timezone.utc).strftime("%Y-%m-%d")
 
     if args.date_from:
         date_from, date_to = args.date_from, args.date_to
@@ -149,7 +155,8 @@ def main():
         date_from, date_to = get_window(args.lookback, args.lookahead)
         mode = "daily"
 
-    print(f"[INFO] mode={mode} run_date={run_date} window={date_from}..{date_to}")
+    out_dir = get_output_dir(mode, run_date, date_from, date_to)
+    print(f"[INFO] mode={mode} run_date={run_date} window={date_from}..{date_to} out={out_dir}")
 
     total_matches = 0
     failed = 0
@@ -162,13 +169,14 @@ def main():
 
         payload = {
             "fetched_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "mode": mode,
             "competition": code,
             "date_from": date_from,
             "date_to": date_to,
             "match_count": len(matches),
             "matches": matches,
         }
-        path = save_raw(payload, code, run_date)
+        path = save_raw(payload, code, out_dir)
 
         counts = Counter(m.get("status", "UNKNOWN") for m in matches)
         scheduled = counts.get("SCHEDULED", 0) + counts.get("TIMED", 0)
