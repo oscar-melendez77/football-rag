@@ -1,0 +1,33 @@
+version: 2
+
+models:
+  - name: articles
+    description: One row per news article (Guardian API full text + RSS summaries), deduplicated by URL; the RAG corpus
+    columns:
+      - name: article_id
+        description: md5 of the normalized URL (surrogate key)
+        data_tests:
+          - unique
+          - not_null
+      - name: url_normalized
+        description: Lowercased URL without query string or trailing slash; the deduplication key
+        data_tests:
+          - unique
+          - not_null
+      - name: title
+        data_tests:
+          - not_null
+      - name: language
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["en", "es"]
+      - name: publisher
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["guardian", "bbc", "espn", "marca", "as"]
+      - name: has_full_text
+        data_tests:
+          - not_null
