@@ -72,7 +72,7 @@ resource "google_bigquery_dataset" "layers" {
 resource "google_service_account" "airflow" {
   account_id   = "airflow-pipeline"
   display_name = "Airflow pipeline"
-  description  = "Identity used by Airflow tasks to write to the data lake"
+  description  = "Identity used by Airflow tasks to write to the data lake and warehouse"
 
   depends_on = [google_project_service.iam]
 }
@@ -81,4 +81,40 @@ resource "google_storage_bucket_iam_member" "airflow_lake_writer" {
   bucket = google_storage_bucket.lake.name
   role   = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.airflow.email}"
+}
+
+resource "google_project_iam_member" "airflow_bq_job_user" {
+  project = var.project_id
+  role    = "roles/bigquery.jobUser"
+  member  = "serviceAccount:${google_service_account.airflow.email}"
+}
+
+resource "google_bigquery_dataset_iam_member" "airflow_bq_editor" {
+  for_each = google_bigquery_dataset.layers
+
+  dataset_id = each.value.dataset_id
+  role       = "roles/bigquery.dataEditor"
+  member     = "serviceAccount:${google_service_account.airflow.email}"
+}
+
+resource "google_bigquery_table" "raw_files" {
+  dataset_id          = google_bigquery_dataset.layers["bronze"].dataset_id
+  table_id            = "raw_files"
+  description         = "One row per raw JSON file from the lake; payload kept as-is (schema-on-read)"
+  deletion_protection = false
+
+  time_partitioning {
+    type  = "DAY"
+    field = "run_date"
+  }
+
+  clustering = ["source"]
+
+  schema = jsonencode([
+    { name = "source", type = "STRING", mode = "REQUIRED", description = "Lake folder, e.g. matches, guardian, rss" },
+    { name = "object_path", type = "STRING", mode = "REQUIRED", description = "Full path of the file in the bucket" },
+    { name = "run_date", type = "DATE", mode = "REQUIRED", description = "Date of the ingestion run" },
+    { name = "loaded_at", type = "TIMESTAMP", mode = "REQUIRED", description = "When this row was loaded into BigQuery" },
+    { name = "payload", type = "JSON", mode = "NULLABLE", description = "The full raw JSON document" },
+  ])
 }

@@ -11,7 +11,10 @@ DATA_ROOT = Path("data")
 SOURCES = {
     "matches": DATA_ROOT / "raw" / "matches",
     "guardian": DATA_ROOT / "raw" / "guardian",
+    "rss": DATA_ROOT / "raw" / "rss",
     "fpl": DATA_ROOT / "raw" / "fpl",
+    "wikipedia": DATA_ROOT / "raw" / "wikipedia",
+    "odds": DATA_ROOT / "raw" / "odds",
 }
 
 
