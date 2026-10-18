@@ -1,4 +1,4 @@
-version: 2
+﻿version: 2
 
 models:
   - name: matches
@@ -34,6 +34,33 @@ models:
       - name: home_team_id
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('teams')
+                field: team_id
       - name: away_team_id
         data_tests:
           - not_null
+          - relationships:
+              arguments:
+                to: ref('teams')
+                field: team_id
+
+  - name: teams
+    description: One row per club, with Wikipedia background and reviewed overrides
+    columns:
+      - name: team_id
+        description: football-data.org team ID (natural key)
+        data_tests:
+          - unique
+          - not_null
+      - name: team_name
+        data_tests:
+          - not_null
+      - name: wiki_match_status
+        description: How the Wikipedia article was matched to this team
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["verified", "manual_override", "unverified", "not_in_snapshot"]
