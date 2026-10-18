@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: football-rag
+    schema: football_bronze
+    description: Raw files loaded from the GCS lake, one row per file
+    tables:
+      - name: raw_files
+        description: Raw JSON payloads; source column says which pipeline produced each file

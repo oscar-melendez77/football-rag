@@ -1,0 +1,12 @@
+football_rag:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth
+      project: football-rag
+      dataset: football_silver
+      location: us-central1
+      threads: 4
+      job_execution_timeout_seconds: 300
+      priority: interactive

@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: matches
+    description: One row per match (latest version), from football-data.org daily runs and season backfill
+    columns:
+      - name: match_id
+        description: football-data.org match ID (natural key)
+        data_tests:
+          - unique
+          - not_null
+      - name: competition_code
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["PL", "ELC", "PD", "SA", "BL1", "FL1", "DED", "PPL", "CL"]
+      - name: status
+        description: Clean match status. Repaired to TIMED when the source sent a datetime instead of a status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["SCHEDULED", "TIMED", "IN_PLAY", "PAUSED", "EXTRA_TIME", "PENALTY_SHOOTOUT", "FINISHED", "SUSPENDED", "POSTPONED", "CANCELLED", "AWARDED"]
+      - name: status_raw
+        description: Status exactly as sent by the source, kept for traceability
+      - name: status_was_repaired
+        description: True when status_raw was a datetime and status was repaired
+        data_tests:
+          - not_null
+      - name: kickoff_utc
+        data_tests:
+          - not_null
+      - name: home_team_id
+        data_tests:
+          - not_null
+      - name: away_team_id
+        data_tests:
+          - not_null
