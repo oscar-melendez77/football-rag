@@ -1,0 +1,43 @@
+{
+  "topics": {
+    "injuries": ["injur", "sidelined", "hamstring", "knee", "ankle", "fitness", "knock", "lesion", "lesionado", "baja", "molestias", "rodilla"],
+    "manager": ["manager", "head coach", "sacked", "boss", "entrenador", "tecnico", "banquillo", "destitu"],
+    "transfers": ["transfer", "signing", "signed", "bid", "loan", "fee", "fichaje", "fichar", "traspaso", "cesion", "oferta"],
+    "form": ["win", "won", "defeat", "lost", "draw", "unbeaten", "winless", "run of", "victoria", "derrota", "empate", "racha"],
+    "defense": ["defen", "clean sheet", "conceded", "centre-back", "back four", "defensa", "encaj", "porteria a cero", "central"],
+    "attack": ["goal", "scored", "striker", "forward", "finishing", "gol", "delantero", "ataque"],
+    "suspension": ["suspen", "ban", "red card", "sancion", "sancionado", "expuls", "roja"]
+  },
+  "questions": [
+    {"id": "q01", "question": "Arsenal injury news", "team": ["arsenal"], "topic": "injuries"},
+    {"id": "q02", "question": "Arsenal defensive record this season", "team": ["arsenal"], "topic": "defense"},
+    {"id": "q03", "question": "Chelsea manager pressure", "team": ["chelsea"], "topic": "manager"},
+    {"id": "q04", "question": "Chelsea recent results", "team": ["chelsea"], "topic": "form"},
+    {"id": "q05", "question": "Liverpool injury list", "team": ["liverpool"], "topic": "injuries"},
+    {"id": "q06", "question": "How have Liverpool been playing lately", "team": ["liverpool"], "topic": "form"},
+    {"id": "q07", "question": "Manchester City attacking play", "team": ["manchester city", "man city"], "topic": "attack"},
+    {"id": "q08", "question": "Is Manchester City unbeaten", "team": ["manchester city", "man city"], "topic": "form"},
+    {"id": "q09", "question": "Manchester United manager", "team": ["manchester united", "man utd", "man united"], "topic": "manager"},
+    {"id": "q10", "question": "Manchester United transfer news", "team": ["manchester united", "man utd", "man united"], "topic": "transfers"},
+    {"id": "q11", "question": "Tottenham players out injured", "team": ["tottenham", "spurs"], "topic": "injuries"},
+    {"id": "q12", "question": "Spurs bad run of results", "team": ["tottenham", "spurs"], "topic": "form"},
+    {"id": "q13", "question": "Newcastle signings", "team": ["newcastle"], "topic": "transfers"},
+    {"id": "q14", "question": "Aston Villa form", "team": ["aston villa"], "topic": "form"},
+    {"id": "q15", "question": "Brighton goals and attack", "team": ["brighton"], "topic": "attack"},
+    {"id": "q16", "question": "lesiones en el Real Madrid", "team": ["real madrid"], "topic": "injuries"},
+    {"id": "q17", "question": "sancion de Vinicius", "team": ["real madrid", "vinicius"], "topic": "suspension"},
+    {"id": "q18", "question": "el entrenador del Real Madrid", "team": ["real madrid"], "topic": "manager"},
+    {"id": "q19", "question": "lesionados del Barcelona", "team": ["barcelona", "barca"], "topic": "injuries"},
+    {"id": "q20", "question": "racha del Barcelona en LaLiga", "team": ["barcelona", "barca"], "topic": "form"},
+    {"id": "q21", "question": "resultados del Atletico de Madrid", "team": ["atletico", "atleti"], "topic": "form"},
+    {"id": "q22", "question": "como llega el Sevilla", "team": ["sevilla"], "topic": "form"},
+    {"id": "q23", "question": "lesion en el Athletic Club", "team": ["athletic"], "topic": "injuries"},
+    {"id": "q24", "question": "injury problems at Real Madrid", "team": ["real madrid"], "topic": "injuries"},
+    {"id": "q25", "question": "Barcelona transfer plans", "team": ["barcelona", "barca"], "topic": "transfers"},
+    {"id": "q26", "question": "Arsenal transfer targets", "team": ["arsenal"], "topic": "transfers"},
+    {"id": "q27", "question": "Chelsea player suspended", "team": ["chelsea"], "topic": "suspension"},
+    {"id": "q28", "question": "Liverpool defensive problems", "team": ["liverpool"], "topic": "defense"},
+    {"id": "q29", "question": "Atletico Madrid injury news", "team": ["atletico", "atleti"], "topic": "injuries"},
+    {"id": "q30", "question": "Manchester United losing streak", "team": ["manchester united", "man utd", "man united"], "topic": "form"}
+  ]
+}
