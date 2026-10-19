@@ -13,7 +13,8 @@ fpl_teams as (
     select
         f.snapshot_at,
         cast(json_value(t, '$.id') as int64) as fpl_team_id,
-        json_value(t, '$.name') as team_name
+        json_value(t, '$.name') as team_name,
+        json_value(t, '$.short_name') as team_short_name
     from files as f,
         unnest(json_query_array(f.payload, '$.data.teams')) as t
 ),
@@ -32,6 +33,7 @@ select
     concat(json_value(pl.p, '$.first_name'), ' ', json_value(pl.p, '$.second_name')) as full_name,
     cast(json_value(pl.p, '$.team') as int64) as fpl_team_id,
     ft.team_name,
+    ft.team_short_name,
     case cast(json_value(pl.p, '$.element_type') as int64)
         when 1 then 'GK' when 2 then 'DEF' when 3 then 'MID' when 4 then 'FWD'
     end as position,

@@ -13,7 +13,6 @@ with snapshots as (
 ),
 
 flagged as (
-    -- Step 1: mark snapshots where the state differs from the previous one
     select
         *,
         if(
@@ -24,7 +23,6 @@ flagged as (
 ),
 
 numbered as (
-    -- Step 2: running total gives every snapshot in a period the same number
     select
         *,
         sum(starts_new_period) over (
@@ -36,7 +34,6 @@ numbered as (
 ),
 
 periods as (
-    -- Step 3: collapse each period into one row
     select
         player_id,
         period_number,
@@ -51,7 +48,6 @@ periods as (
 ),
 
 periods_with_end as (
-    -- Step 4: a period ends when the next one starts
     select
         *,
         lead(valid_from) over (partition by player_id order by valid_from) as valid_to
@@ -59,7 +55,7 @@ periods_with_end as (
 ),
 
 latest_player as (
-    select player_id, web_name, full_name, team_name, position
+    select player_id, web_name, full_name, team_name, team_short_name, position
     from (
         select
             *,
@@ -75,6 +71,7 @@ select
     lp.web_name,
     lp.full_name,
     lp.team_name,
+    lp.team_short_name,
     lp.position,
     p.status,
     p.news,

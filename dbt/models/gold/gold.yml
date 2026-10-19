@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: team_match_results
+    description: One row per team per finished match (both sides of every match)
+    columns:
+      - name: team_match_key
+        data_tests:
+          - unique
+          - not_null
+      - name: result
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["W", "D", "L"]
+
+  - name: standings
+    description: League table per competition for the current season, computed from results
+    columns:
+      - name: standings_key
+        data_tests:
+          - unique
+          - not_null
+      - name: position
+        data_tests:
+          - not_null
+
+  - name: team_form
+    description: Last-5 form across competitions plus domestic league position, one row per team
+    columns:
+      - name: team_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: team_availability
+    description: Current absences per Premier League team (FPL), linked by 3-letter team code
+    columns:
+      - name: team_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: upcoming_fixtures
+    description: One row per upcoming match with odds, form, positions and absences
+    columns:
+      - name: match_id
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('matches')
+                field: match_id
+      - name: market_favorite
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["home", "draw", "away"]
+
+  - name: team_profile
+    description: Background plus current situation per team
+    columns:
+      - name: team_id
+        data_tests:
+          - unique
+          - not_null

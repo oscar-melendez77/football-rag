@@ -12,6 +12,9 @@ models:
     silver:
       +schema: football_silver
       +materialized: table
+    gold:
+      +schema: football_gold
+      +materialized: table
 
 seeds:
   football_rag:
