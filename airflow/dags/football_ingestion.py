@@ -2,11 +2,12 @@ from datetime import timedelta
 
 import pendulum
 from airflow.providers.standard.operators.bash import BashOperator
-from airflow.sdk import DAG
+from airflow.sdk import DAG, Asset
 
 PROJECT_DIR = "/opt/airflow/project"
 COMPETITIONS = "PL ELC PD SA BL1 FL1 DED PPL CL"
 START_DATE = pendulum.datetime(2026, 10, 16, tz="UTC")
+BRONZE_RAW_FILES = Asset("bigquery://football-rag/football_bronze/raw_files")
 
 default_args = {
     "owner": "oscar",
@@ -29,6 +30,7 @@ def load_task(source):
         task_id=f"load_{source}",
         bash_command=f"python -u src/load_bronze.py --source {source}",
         cwd=PROJECT_DIR,
+        outlets=[BRONZE_RAW_FILES],
     )
 
 

@@ -10,3 +10,13 @@ football_rag:
       threads: 4
       job_execution_timeout_seconds: 300
       priority: interactive
+    prod:
+      type: bigquery
+      method: service-account
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
+      project: football-rag
+      dataset: football_silver
+      location: us-central1
+      threads: 4
+      job_execution_timeout_seconds: 300
+      priority: interactive
