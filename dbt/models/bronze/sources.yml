@@ -8,3 +8,11 @@ sources:
     tables:
       - name: raw_files
         description: Raw JSON payloads; source column says which pipeline produced each file
+
+  - name: gold_external
+    database: football-rag
+    schema: football_gold
+    description: Gold tables written outside dbt (by Python jobs)
+    tables:
+      - name: article_chunks
+        description: Article passages with embeddings, written by src/embed_articles.py
