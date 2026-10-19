@@ -1,0 +1,39 @@
+version: 2
+
+models:
+  - name: player_snapshots
+    description: One row per Premier League player per FPL snapshot (every 6 hours)
+    columns:
+      - name: snapshot_key
+        description: player_id plus snapshot time
+        data_tests:
+          - unique
+          - not_null
+      - name: player_id
+        data_tests:
+          - not_null
+      - name: status
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ["available", "doubtful", "injured", "suspended", "unavailable", "not_in_squad"]
+
+  - name: player_availability
+    description: SCD Type 2 history of each player's availability (status, news, chance of playing)
+    columns:
+      - name: period_id
+        description: md5 of player_id and valid_from
+        data_tests:
+          - unique
+          - not_null
+      - name: player_id
+        data_tests:
+          - not_null
+      - name: valid_from
+        data_tests:
+          - not_null
+      - name: is_current
+        description: True for the period still in effect (valid_to is empty)
+        data_tests:
+          - not_null

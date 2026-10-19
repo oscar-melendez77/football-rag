@@ -1,0 +1,34 @@
+version: 2
+
+models:
+  - name: odds_quotes
+    description: One row per odds event per bookmaker per snapshot (h2h market, decimal prices)
+    columns:
+      - name: quote_key
+        data_tests:
+          - unique
+          - not_null
+      - name: event_id
+        data_tests:
+          - not_null
+
+  - name: odds
+    description: Market-implied match probabilities (margin removed, averaged across bookmakers), linked to matches
+    columns:
+      - name: event_id
+        data_tests:
+          - unique
+          - not_null
+      - name: competition_code
+        data_tests:
+          - not_null
+      - name: bookmaker_count
+        data_tests:
+          - not_null
+      - name: match_id
+        description: Linked football-data match; empty when no confident match was found
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('matches')
+                field: match_id
