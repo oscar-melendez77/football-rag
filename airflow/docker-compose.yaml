@@ -85,6 +85,7 @@ x-airflow-common:
     - ../config:/opt/airflow/project/config
     - ../data:/opt/airflow/project/data
     - ../dbt:/opt/airflow/project/dbt
+    - ../models:/opt/airflow/models
     - ${AIRFLOW_PROJ_DIR:-.}/secrets:/opt/airflow/secrets:ro
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
