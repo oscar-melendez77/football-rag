@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Football RAG Assistant</title>
+<style>
+  :root { --bg: #f6f7f9; --card: #ffffff; --text: #1d2330; --muted: #5d6675; --accent: #1f7a4d; --border: #dde1e7; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #12161d; --card: #1b212b; --text: #e6e9ef; --muted: #9aa3b2; --accent: #4cc38a; --border: #2c3442; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; }
+  form { display: flex; gap: 8px; }
+  input { flex: 1; padding: 12px; font-size: 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--card); color: var(--text); }
+  button { padding: 12px 18px; font-size: 1rem; border: 0; border-radius: 8px; background: var(--accent); color: #fff; cursor: pointer; }
+  button:disabled { opacity: 0.6; cursor: wait; }
+  .examples { margin: 12px 0 24px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .examples button { background: var(--card); color: var(--text); border: 1px solid var(--border); font-size: 0.85rem; padding: 6px 10px; }
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 16px; }
+  .answer { white-space: pre-wrap; line-height: 1.55; }
+  .meta { color: var(--muted); font-size: 0.85rem; margin-bottom: 12px; }
+  ol { padding-left: 20px; margin: 8px 0 0; }
+  li { margin: 6px 0; }
+  a { color: var(--accent); }
+  .error { color: #c0392b; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Football RAG Assistant</h1>
+  <p class="sub">Answers grounded in tested match data, odds, player availability and news articles, with sources.</p>
+  <form id="ask-form">
+    <input id="question" placeholder="Ask about a team, a match or the news..." maxlength="300" required>
+    <button id="submit" type="submit">Ask</button>
+  </form>
+  <div class="examples">
+    <button type="button">How are Arsenal doing and what's next for them?</button>
+    <button type="button">Who is injured at Tottenham?</button>
+    <button type="button">¿Cómo llega el Real Madrid al Clásico?</button>
+    <button type="button">Who is favourite in Chelsea vs Tottenham?</button>
+  </div>
+  <div id="result"></div>
+</main>
+<script>
+  const form = document.getElementById("ask-form");
+  const input = document.getElementById("question");
+  const submit = document.getElementById("submit");
+  const result = document.getElementById("result");
+
+  document.querySelectorAll(".examples button").forEach(b => {
+    b.addEventListener("click", () => { input.value = b.textContent; form.requestSubmit(); });
+  });
+
+  function el(tag, text, cls) {
+    const node = document.createElement(tag);
+    if (text) node.textContent = text;
+    if (cls) node.className = cls;
+    return node;
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const question = input.value.trim();
+    if (question.length < 3) return;
+    submit.disabled = true;
+    submit.textContent = "Thinking...";
+    result.replaceChildren(el("div", "Searching match data and articles...", "card meta"));
+    try {
+      const response = await fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || "Request failed");
+
+      const card = el("div", null, "card");
+      const teams = data.teams_detected.length ? data.teams_detected.join(", ") : "none";
+      card.append(el("div", "Teams detected: " + teams, "meta"));
+      card.append(el("div", data.answer, "answer"));
+      card.append(el("h3", "Sources"));
+      const list = el("ol");
+      list.append(el("li", "[F] Tables: football-data.org, FPL, The Odds API"));
+      data.sources.forEach(s => {
+        const item = el("li");
+        item.append(document.createTextNode(`[${s.ref}] ${s.publisher} · ${s.published_at || ""} · `));
+        const link = el("a", s.title);
+        link.href = s.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        item.append(link);
+        list.append(item);
+      });
+      card.append(list);
+      result.replaceChildren(card);
+    } catch (error) {
+      result.replaceChildren(el("div", "Error: " + error.message, "card error"));
+    } finally {
+      submit.disabled = false;
+      submit.textContent = "Ask";
+    }
+  });
+</script>
+</body>
+</html>

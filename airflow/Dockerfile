@@ -8,3 +8,5 @@ RUN python -m venv /opt/airflow/dbt-venv \
 RUN python -m venv /opt/airflow/ml-venv \
     && /opt/airflow/ml-venv/bin/pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu \
     && /opt/airflow/ml-venv/bin/pip install --no-cache-dir sentence-transformers google-cloud-bigquery python-dotenv
+
+RUN /opt/airflow/ml-venv/bin/pip install --no-cache-dir fastapi "uvicorn[standard]"
